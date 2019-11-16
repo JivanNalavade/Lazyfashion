@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="4a10bd63-4b3b-47a4-b041-0e4eabbf30ab" >
+		<salesforce:cached-basic-connection username="${secure::sf.username}" password="${secure::sf.password}" securityToken="${secure::sf.token}" />
+	</salesforce:sfdc-config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="466c6f47-38b4-453e-93eb-5d4df8d29c48" file="properties/credentials-${mule.env}.yaml" key="${properties.key}" />
+	<global-property doc:name="Global Property" doc:id="88d92292-54ef-4cfb-a845-b411075e8853" name="mule.env" value="dev" />
+	<global-property doc:name="Global Property" doc:id="9a3d0fd5-4bda-4824-b96e-ff258be9a92a" name="properties.key" value="1234567812345678" />
+</mule>

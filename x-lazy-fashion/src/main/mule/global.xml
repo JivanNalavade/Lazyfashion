@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="32b4ae9c-77ad-4b5e-b43d-de0e1c78d243" >
+		<db:my-sql-connection host="www.db4free.net" port="3306" user="jivan1" password="jivannalavade" database="lazyfashiondb" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="8f2f96fd-cd2d-4486-a065-cf29d60429e6" file="properties/${mule.env}.yaml" />
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="5525594a-0efc-4a40-93f9-246426a6946b" >
+		<http:request-connection host="${sys.host}" port="${sys.port}" />
+	</http:request-config>
+	<global-property doc:name="Global Property" doc:id="ba6720b0-6524-42e4-beae-760e2d85743a" name="mule.env" value="dev" />
+	<global-property doc:name="Global Property" doc:id="1233eb97-c795-4ac9-9f28-be7c454c356e" name="properties.key" value="1234567812345678" />
+</mule>

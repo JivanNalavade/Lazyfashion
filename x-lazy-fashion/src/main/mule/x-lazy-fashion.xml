@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="bbbd817f-6711-4a00-8de8-52b933694f79" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="x-lazy-fashionFlow" doc:id="ce694d1f-af97-4fd0-8e68-5f9ab0127397" >
+		<scheduler doc:name="Scheduler" doc:id="40b7a448-a711-4bcd-b071-f4ce6e62cefd" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="10" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<http:request method="GET" doc:name="Request" doc:id="94f3671d-da42-4c21-8fc3-287c58f76ae2" config-ref="HTTP_Request_configuration" path="${sys.path}"/>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="881a5ab9-b32b-4329-9c4c-1d3541dc51e1" config-ref="Database_Config">
+			<db:sql >INSERT INTO  Customer(Name, email, address, Contact)
+VALUES (:Name, :email__c,:Address__c, :phone_number__c)</db:sql>
+		</db:bulk-insert>
+		<ee:transform doc:name="Transform Message" doc:id="57094520-7743-4317-9cbb-e325f5cae78a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

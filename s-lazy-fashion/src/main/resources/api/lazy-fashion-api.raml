@@ -1,0 +1,54 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/d5d495f0-13c6-4bd2-a092-f703f3e6f1d0/ # 
+title: Lazy Fashion API
+
+uses:
+  customers: resources/Customerlibrary.raml
+  customerResponse: resources/CustomerResponselibrary.raml
+
+/customer:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: customers.customers
+            example: !include  examples/customers.json
+
+  post:
+    body:
+      application/json:
+        type: customers.customers
+        example: !include  examples/customers.json
+    
+    responses:
+      201:
+        body:
+          application/json:
+            type: customerResponse.CustomerResponce
+            example: !include examples/CustomerResponse.json
+              
+  /{Id}:
+      put:
+        body:
+          application/json:
+            type: customers.customer
+            example: !include  examples/customer.json
+    
+        responses:
+          200:
+            body:
+              application/json:
+                type: customerResponse.CustomerResponce
+                example: !include examples/CustomerResponse.json
+            
+        
+
+            
+
+    
+    
+          
+          
+              
+              

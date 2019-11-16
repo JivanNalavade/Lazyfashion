@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<sub-flow name="lazy-fashion-get-customers-Sub-Flow" doc:id="a00a7832-4de5-4e18-a2a8-cfb024352856" >
+		<salesforce:query doc:name="Query" doc:id="1110e821-3c78-44ef-ae3a-eda6a5abad65" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query >Select Id, Name, Address__c, email__c, phone_number__c from Customer__c</salesforce:salesforce-query>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="4397cfa6-eb20-4e6e-b488-ec56919c3a9c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="lazy-fashion-create-customer-Sub_Flow" doc:id="d4025bc4-93e3-4f6e-b6f9-2b5360d19d92" >
+		<ee:transform doc:name="Transform Message" doc:id="7b60e22b-4625-4689-8db8-adfbdea7c5ed" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload map ((item, index) -> {
+    'Name': item.name,
+    'Address__c': item.address, 
+    'email__c': item.email,
+    'phone_number__c': item.phone
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="Customer__c" doc:name="Create" doc:id="b69cff90-173c-43b0-ae0b-d9de36dcc9e0" config-ref="Salesforce_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="e1bbaca9-2df6-4fc3-8d23-74bd4ea49a0a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="lazy-fashion-update-customer-Sub_Flow" doc:id="93c96c51-211f-4edb-a059-744ba1a32aa4" >
+		<ee:transform doc:name="Transform Message" doc:id="8ced8ed8-8e0b-4a02-859d-5791cf994615" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java 
+---
+[{
+	Id: attributes.uriParams.Id,
+	(email__c: payload.email) if (payload.email != null),
+	(phone_number__c: payload.phone) if (payload.phone != null),
+	(Address__c: payload.address) if (payload.address != null)
+}]]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<salesforce:update doc:name="Update" doc:id="1c629f92-7907-45a0-8a7e-aef1d95a83cd" config-ref="Salesforce_Config" type="Customer__c"/>
+		<ee:transform doc:name="Transform Message" doc:id="d58ad012-bf78-4c8f-8d16-506bd9e84ac8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
